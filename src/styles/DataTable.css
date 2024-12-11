@@ -1,0 +1,86 @@
+/* Container */
+.table-container {
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Header */
+  .table-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #343a40;
+  }
+  
+  /* Table */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: 12px;
+    border: 1px solid #dee2e6;
+  }
+  
+  .data-table th {
+    background-color: #f8f9fa;
+    color: #495057;
+  }
+  
+  .data-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+  }
+  
+  .data-table td {
+    color: #343a40;
+  }
+  
+  .data-table td:first-child {
+    font-weight: bold;
+  }
+  
+  /* Center align columns if needed */
+  .data-table td:nth-child(7), /* Banner */
+  .data-table td:nth-child(8) { /* Port */
+    text-align: center;
+  }
+  
+  /* Italicize certain columns if desired */
+  .data-table td:nth-child(4),
+  .data-table td:nth-child(6) {
+    font-style: italic;
+  }
+  
+  /* Pagination */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 5px;
+  }
+  
+  .pagination button {
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+    background-color: #ffffff;
+    color: #495057;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .pagination button:hover {
+    background-color: #e9ecef;
+  }
+  
+  .pagination button.active {
+    background-color: #007bff;
+    color: #ffffff;
+    border-color: #007bff;
+  }
+  
