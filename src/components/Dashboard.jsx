@@ -18,7 +18,9 @@ const Dashboard = () => {
     },
   });
 
-  // Messages to cycle through while scanning
+  // If loading is true, show spinner until first result arrives
+  const [loading, setLoading] = useState(false);
+
   const scanningMessages = [
     "Dusting off the magnifying glass...",
     "Following digital footprints...",
@@ -26,12 +28,12 @@ const Dashboard = () => {
     "Brewed a cup of coffee; digging deeper...",
     "Decrypting hidden whispers of the web..."
   ];
-
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
 
   useEffect(() => {
     let interval;
-    if (scanResult.status === "scanning") {
+    // Only cycle scanning messages if loading is true
+    if (loading) {
       interval = setInterval(() => {
         setCurrentMessageIndex((prevIndex) =>
           (prevIndex + 1) % scanningMessages.length
@@ -41,12 +43,14 @@ const Dashboard = () => {
       clearInterval(interval);
     }
     return () => clearInterval(interval);
-  }, [scanResult.status, scanningMessages.length]);
+  }, [loading, scanningMessages.length]);
 
   const handleNewScanResult = (result) => {
     try {
       const parsedResult = JSON.parse(result);
       setScanResult(parsedResult);
+      // Once we have a result, we can stop loading/spinner
+      setLoading(false);
     } catch (error) {
       console.error("Error parsing scan result:", error);
     }
@@ -70,41 +74,42 @@ const Dashboard = () => {
         <h1>Scan ME</h1>
       </div>
 
-      <WebSocketComponent onNewMessage={handleNewScanResult} />
+      <WebSocketComponent
+        onNewMessage={handleNewScanResult}
+        onScanStarted={() => setLoading(true)} // When scan starts, show spinner
+      />
 
-      {scanResult.domain ? (
-        scanResult.status === "in_progress" ? (
-          <>
-            <h2>Scanning {scanResult.domain}</h2>
-            <div className="loading-indicator">
-              <div className="spinner"></div>
-              <p>{scanningMessages[currentMessageIndex]}</p>
-            </div>
-          </>
-        ) : (
-          <>
-            <h2>Scan Results for {scanResult.domain}</h2>
-            <p>Status: <strong>{scanResult.status}</strong></p>
+      {loading ? (
+        <>
+          <h2>Scanning {scanResult.domain || "..."}</h2>
+          <div className="loading-indicator">
+            <div className="spinner"></div>
+            <p>{scanningMessages[currentMessageIndex]}</p>
+          </div>
+        </>
+      ) : scanResult.domain ? (
+        <>
+          <h2>Scan Results for {scanResult.domain}</h2>
+          <p>Status: <strong>{scanResult.status}</strong></p>
 
-            <div className="card-grid">
-              <div className="card">
-                <h3>Emails Found</h3>
-                <p>{scanResult.result.emails.length}</p>
-              </div>
-              <div className="card">
-                <h3>Subdomains Found</h3>
-                <p>{scanResult.result.subdomains.length}</p>
-              </div>
-              <div className="card">
-                <h3>IP Addresses Found</h3>
-                <p>{scanResult.result.ipAddresses.length}</p>
-              </div>
+          <div className="card-grid">
+            <div className="card">
+              <h3>Emails Found</h3>
+              <p>{scanResult.result.emails.length}</p>
             </div>
-          </>
-        )
+            <div className="card">
+              <h3>Subdomains Found</h3>
+              <p>{scanResult.result.subdomains.length}</p>
+            </div>
+            <div className="card">
+              <h3>IP Addresses Found</h3>
+              <p>{scanResult.result.ipAddresses.length}</p>
+            </div>
+          </div>
+        </>
       ) : (
         <h2>
-          Trust me our fingers are really bored!! give us domain -will show you something hidden ;)
+          Trust me our fingers are really bored!! give us a domain - will show you something hidden ;)
         </h2>
       )}
 

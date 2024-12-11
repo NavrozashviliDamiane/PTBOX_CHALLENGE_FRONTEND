@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import axios from "axios";
 
-const WebSocketComponent = ({ onNewMessage }) => {
+const WebSocketComponent = ({ onNewMessage, onScanStarted }) => {
   const [socketUrl] = useState("wss://pitboxosint-production.up.railway.app/scan-progress");
   const [scanRequest, setScanRequest] = useState({ domain: "", tool: "theharvester" });
 
@@ -34,6 +34,9 @@ const WebSocketComponent = ({ onNewMessage }) => {
     }
 
     try {
+      // Notify parent that scan started (show spinner)
+      onScanStarted && onScanStarted();
+
       await axios.post(
         "https://pitboxosint-production.up.railway.app/api/scans",
         scanRequest
